@@ -24,15 +24,17 @@ def dijkstra(graph, start):
 
 N, M, X = map(int, input().split())
 graph = {n: {} for n in range(1, N + 1)}
+graph_inverse = {n: {} for n in range(1, N + 1)}
 for _ in range(M):
     a, b, t = map(int, input().split())
     graph[a][b] = t
-    
+    graph_inverse[b][a] = t
+
 distances = dijkstra(graph, X)
+distances_inverse = dijkstra(graph_inverse, X)
 
 ans = 0
 for i in range(1, N + 1):
-    distances[i] += dijkstra(graph, i)[X]
-    ans = max(ans, distances[i])
+    ans = max(ans, distances[i] + distances_inverse[i])
 
 print(ans)
