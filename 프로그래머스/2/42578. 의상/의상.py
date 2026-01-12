@@ -1,10 +1,6 @@
+from collections import Counter
+from math import prod
+
 def solution(clothes):
-    categories = { category: [] for [cloth, category] in clothes }
-    for [cloth, category] in clothes: categories[category].append(cloth)
-    
-    answer = 1
-    for category in categories:
-        answer *= len(categories[category]) + 1
-    
-    answer -= 1
-    return answer
+    counts = Counter([x[1] for x in clothes])
+    return prod(map(lambda x: x+1, counts.values())) - 1
