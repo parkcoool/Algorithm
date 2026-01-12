@@ -1,19 +1,16 @@
 from math import ceil
 
 def solution(progresses, speeds):
-    ans = []
-    start = 0
+    day_spends = [ceil((100 - progresses[i]) / speeds[i]) for i in range(len(progresses))]
     
-    while start < len(progresses):
-        day = ceil(max(100 - progresses[start], 0) / speeds[start])
-        for index in range(start, len(progresses)):
-            progresses[index] += day * speeds[index]
-            
+    index = 0
+    ans = []
+    while index < len(progresses):
         count = 0
-        while start < len(progresses) and progresses[start] >= 100:
-            start += 1
+        max_day = day_spends[index]
+        while index < len(progresses) and day_spends[index] <= max_day:
+            index += 1
             count += 1
-        
         if count > 0: ans.append(count)
     
     return ans
