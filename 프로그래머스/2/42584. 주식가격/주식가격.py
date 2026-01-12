@@ -1,11 +1,15 @@
 def solution(prices):
-    ans = []
-    for index, price in enumerate(prices):
-        end_index = index
-        while end_index < len(prices) - 1:
-            end_index += 1
-            if prices[end_index] < price: break
-        ans.append(end_index - index)
+    indexes = []
+    ans = [-1] * len(prices)
+    
+    for index in range(len(prices)):
+        while indexes and prices[indexes[-1]] > prices[index]:
+            past = indexes.pop()
+            ans[past] = index - past
         
+        indexes.append(index)
+    
+    for index in indexes:
+        ans[index] = len(prices) - index - 1
+    
     return ans
-            
