@@ -1,7 +1,3 @@
-# 1: 1,2,3,4,5
-# 2: 2,1,2,3,2,4,2,5
-# 3: 31245
-
 def solution(answers):
     corrects = [0, 0, 0]
     for index, answer in enumerate(answers):
