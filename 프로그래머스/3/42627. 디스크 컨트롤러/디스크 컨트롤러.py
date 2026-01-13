@@ -19,10 +19,9 @@ def solution(jobs):
         # 현재 진행 중인 작업 종료
         if h:
             current = heapq.heappop(h)
-            current_end = max(current_end, current[1]) + current[0]
+            current_end = current_end + current[0]
             ans += current_end - current[1]
         else:
-            
             # 현재 진행 중인 작업이 끝나기 이전에 요청되는 작업이 없으면
             if job_index < len(jobs) and sorted_jobs[job_index][0] > current_end:
                 # 대기
