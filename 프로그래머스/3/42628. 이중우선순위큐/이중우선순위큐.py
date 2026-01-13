@@ -30,7 +30,6 @@ def solution(operations):
                 if max_h:
                     max_value, max_id = heapq.heappop(max_h)
                     dead[max_id] = True
-                    
     
     while min_h and dead[min_h[0][1]]: heapq.heappop(min_h)
     while max_h and dead[max_h[0][1]]: heapq.heappop(max_h)
