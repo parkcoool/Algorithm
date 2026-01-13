@@ -10,11 +10,7 @@ def solution(n, lost, reserve):
     given = set()
     
     for n in lost:
-        if n in reserve:
-            reserve.remove(n)
-            given.add(n)
-            ans += 1
-        elif n - 1 in reserve and n + 1 not in reserve:
+        if n - 1 in reserve and n + 1 not in reserve:
             reserve.remove(n - 1)
             given.add(n - 1)
             ans += 1
