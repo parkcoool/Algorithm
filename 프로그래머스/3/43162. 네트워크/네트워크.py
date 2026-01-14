@@ -1,19 +1,16 @@
-import collections
+def dfs(n, graph, visited):
+    visited.add(n)
+    for i, linked in enumerate(graph[n]):
+        if not linked: continue
+        if i in visited: continue
+        dfs(i, graph, visited)
+    
 
 def solution(n, computers):
-    visit = [False] * n
+    visited = set()
     ans = 0
-    
-    for init in range(n):
-        if visit[init]: continue
-        
+    for i in range(n):
+        if i in visited: continue
+        dfs(i, computers, visited)
         ans += 1
-        q = collections.deque([init])
-        while(q):
-            current = q.popleft()
-            if visit[current]: continue
-            for i in range(n):
-                if not computers[current][i] or visit[i]: continue
-                q.append(i)
-            visit[current] = True
     return ans
