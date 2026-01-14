@@ -1,30 +1,29 @@
 import heapq
 
 def solution(jobs):
-    sorted_jobs = sorted(jobs)
+    jobs.sort()
+    
     job_index = 0
-    current_end = 0
+    end_at = 0
     ans = 0
+    q = []
     
-    # 현재 진행 중인 작업이 끝나고 진행할 작업 대기열 (소요 시간, 요청 시각)
-    h = []
-    
-    while h or job_index < len(jobs):   
-        # 현재 진행 중인 작업이 끝나기 이전에 요청되는 작업을 h에 추가
-        while job_index < len(jobs) and sorted_jobs[job_index][0] <= current_end:
-            heapq.heappush(h, (sorted_jobs[job_index][1], sorted_jobs[job_index][0]))
-            job_index += 1
+    while job_index < len(jobs) or q:
+        # 현재 작업이 끝나기 전에 요청되는 작업들을 대기열에 추가
+        for req, duration in jobs[job_index:]:
+            if req <= end_at:
+                heapq.heappush(q, (duration, req))
+                job_index += 1
+            else: break
 
-        # 대기 중인 작업이 있으면
-        if h:
-            # 현재 작업 종료 후 바로 시작
-            current = heapq.heappop(h)
-            current_end = current_end + current[0]
-            ans += current_end - current[1]
-        
-        # 없으면
-        else:
-            # 대기
-            current_end = sorted_jobs[job_index][0]
-        
+        # 현재 작업 종료
+        # 대기열에 작업이 있으면 바로 시작
+        if q:
+            duration, req = heapq.heappop(q)
+            end_at += duration
+            ans += end_at - req
+
+        # 대기열에 작업이 없으면 대기
+        else: end_at = jobs[job_index][0]
+    
     return ans // len(jobs)
