@@ -1,15 +1,12 @@
 SELECT
-    info.ITEM_ID, ITEM_NAME, RARITY
+    Child.ITEM_ID,
+    Child.ITEM_NAME,
+    Child.RARITY
 FROM
-    ITEM_INFO info JOIN ITEM_TREE tree ON info.ITEM_ID = tree.ITEM_ID
+    ITEM_INFO Child
+    JOIN ITEM_TREE T ON Child.ITEM_ID = T.ITEM_ID
+    JOIN ITEM_INFO Parent ON T.PARENT_ITEM_ID = Parent.ITEM_ID
 WHERE
-    (
-        SELECT
-            RARITY
-        FROM
-            ITEM_INFO
-        WHERE
-            ITEM_ID = PARENT_ITEM_ID
-    ) = "RARE"
+    Parent.RARITY = "RARE"
 ORDER BY
-    ITEM_ID DESC;
+    Child.ITEM_ID DESC;
