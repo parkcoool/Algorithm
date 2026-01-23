@@ -1,3 +1,12 @@
+WITH ECOLI AS
+(
+    SELECT
+        ID,
+        PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY DESC) AS PER
+    FROM
+        ECOLI_DATA
+)
+
 SELECT
     ID,
     (
@@ -8,12 +17,5 @@ SELECT
         ELSE "LOW"
         END
     ) AS COLONY_NAME
-FROM
-    (
-        SELECT
-            ID,
-            PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY DESC) AS PER
-        FROM
-            ECOLI_DATA
-    ) AS ECOLI
+FROM ECOLI
 ORDER BY ID;
