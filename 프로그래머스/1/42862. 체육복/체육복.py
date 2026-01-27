@@ -1,31 +1,26 @@
 def solution(n, lost, reserve):
     lost = set(lost)
     reserve = set(reserve)
-    
     lost_reserve = lost & reserve
     lost -= lost_reserve
     reserve -= lost_reserve
     
-    ans = n - len(lost)
-    given = set()
+    for i in range(1, n + 1):
+        if i not in lost: continue
+        if i - 1 in reserve and i + 1 not in reserve:
+            reserve.remove(i - 1)
+            lost.remove(i)
+        elif i - 1 not in reserve and i + 1 in reserve:
+            reserve.remove(i + 1)
+            lost.remove(i)
     
-    for n in lost:
-        if n - 1 in reserve and n + 1 not in reserve:
-            reserve.remove(n - 1)
-            given.add(n - 1)
-            ans += 1
-        elif n - 1 not in reserve and n + 1 in reserve:
-            reserve.remove(n + 1)
-            given.add(n + 1)
-            ans += 1
+    for i in range(1, n + 1):
+        if i not in lost: continue
+        if i - 1 in reserve:
+            reserve.remove(i - 1)
+            lost.remove(i)
+        elif i + 1 in reserve:
+            reserve.remove(i + 1)
+            lost.remove(i)
     
-    for n in lost - given:
-        if n - 1 in reserve:
-            reserve.remove(n - 1)
-            ans += 1
-        elif n + 1 in reserve:
-            reserve.remove(n + 1)
-            ans += 1
-        
-    return ans
-        
+    return n - len(lost)
