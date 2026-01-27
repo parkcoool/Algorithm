@@ -1,16 +1,26 @@
-def dfs(n, graph, visited):
-    visited.add(n)
-    for i, linked in enumerate(graph[n]):
-        if not linked: continue
-        if i in visited: continue
-        dfs(i, graph, visited)
-    
+from collections import deque, defaultdict
 
 def solution(n, computers):
-    visited = set()
+    graph = defaultdict(set)
+    for i in range(n):
+        for j in range(n):
+            if i == j: continue
+            if computers[i][j] != 1: continue
+            graph[i].add(j)
+            graph[j].add(i)
+    
     ans = 0
+    visited = set()
     for i in range(n):
         if i in visited: continue
-        dfs(i, computers, visited)
+        visited.add(i)
         ans += 1
+        q = deque([i])
+        while q:
+            current = q.popleft()
+            for next in graph[current]:
+                if next in visited: continue
+                visited.add(next)
+                q.append(next)
+    
     return ans
