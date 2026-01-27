@@ -1,14 +1,7 @@
-SELECT
-    a.ID,
-    COALESCE(CHILD_COUNT, 0) AS CHILD_COUNT
-FROM
-    ECOLI_DATA a LEFT JOIN
-    (
-        SELECT
-            PARENT_ID AS ID,
-            COUNT(*) AS CHILD_COUNT
-        FROM ECOLI_DATA
-        GROUP BY PARENT_ID
-    ) AS b
-    ON a.ID = b.id
-ORDER BY ID ASC;
+select p.ID as ID, coalesce(c.COUNT, 0) as CHILD_COUNT
+from ECOLI_DATA p left join (
+    select PARENT_ID, count(*) as COUNT
+    from ECOLI_DATA
+    group by PARENT_ID
+) c on p.ID = c.PARENT_ID
+order by ID asc;
