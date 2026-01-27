@@ -1,21 +1,12 @@
-WITH ECOLI AS
-(
-    SELECT
-        ID,
-        PERCENT_RANK() OVER (ORDER BY SIZE_OF_COLONY DESC) AS PER
-    FROM
-        ECOLI_DATA
-)
-
-SELECT
-    ID,
-    (
-        CASE
-        WHEN PER <= 0.25 THEN "CRITICAL"
-        WHEN PER <= 0.5 THEN "HIGH"
-        WHEN PER <= 0.75 THEN "MEDIUM"
-        ELSE "LOW"
-        END
-    ) AS COLONY_NAME
-FROM ECOLI
-ORDER BY ID;
+select a.ID, (
+    case
+    when PERCENT <= 0.25 then "CRITICAL"
+    when PERCENT <= 0.5 then "HIGH"
+    when PERCENT <= 0.75 then "MEDIUM"
+    else "LOW"
+    end
+) as COLONY_NAME
+from ECOLI_DATA a join (
+    select ID, percent_rank() over (order by SIZE_OF_COLONY desc) as PERCENT
+    from ECOLI_DATA
+) as b on a.ID = b.ID
