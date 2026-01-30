@@ -9,14 +9,14 @@ def solution(n, edge):
     dists = [-1] * (n + 1)
     dists[1] = 0
     
-    # (node, dist)
-    q = deque([(1, 0)])
+    q = deque([1])
     while q:
-        node, dist = q.popleft()
+        node = q.popleft()
+        dist = dists[node]
         for next_node in graph[node]:
-            if dists[next_node] != -1 and dist + 1 >= dists[next_node]: continue
+            if dists[next_node] != -1: continue
             dists[next_node] = dist + 1
-            q.append((next_node, dist + 1))
+            q.append(next_node)
     
     return dists.count(max(dists))
     
