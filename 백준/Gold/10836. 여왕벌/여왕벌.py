@@ -12,9 +12,9 @@ for _ in range(N):
   for i, growth in enumerate(growths):
     grid[max(0, M - 1 - i)][max(0, -M + 1 + i)] += growth
   
-  for y in range(1, M):
-    for x in range(1, M):
-      grid[y][x] += max(growths[M - 1 - y:M + x])
-
+for y in range(1, M):
+  for x in range(1, M):
+    grid[y][x] = grid[0][x]
+    
 for row in grid:
   print(*row)
