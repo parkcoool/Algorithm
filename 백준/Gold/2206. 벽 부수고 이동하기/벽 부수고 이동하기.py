@@ -1,46 +1,66 @@
-import sys
 from collections import deque
 
-INF = float("inf")
-input = sys.stdin.readline
+OFFSETS = ((1, 0), (0, 1), (-1, 0), (0, -1))
 
 N, M = map(int, input().split())
-grid = [list(map(int, input().strip())) for _ in range(N)]
+grid = [list(map(int, input())) for _ in range(N)]
 
-# dp[y][x][0]: 벽을 부수지 않았을 때 (y, x)까지의 최단 거리
-# dp[y][x][1]: 벽을 부쉈을 때 (y, x)까지의 최단 거리
-dp = [[[INF, INF] for _ in range(M)] for _ in range(N)]
-dp[0][0][0] = 1
-dp[0][0][1] = 1
+# dp_1[y][x] = (y, x)에서 목적지까지 가는 최단 거리
+dp_1 = [[-1] * M for _ in range(N)]
+dp_1[N - 1][M - 1] = 0
 
-q = deque([(0, 0)])
-while q:
-  y, x = q.popleft()
-  cost1, cost2 = dp[y][x]
+# dp_2[y][x] = 시작점에서 (y, x)까지 가는 최단 거리
+dp_2 = [[-1] * M for _ in range(N)]
+dp_2[0][0] = 1
 
-  for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):
-    ny, nx = y + dy, x + dx
-    if not (0 <= ny < N): continue
-    if not (0 <= nx < M): continue
 
-    skip = True
-    
-    if grid[ny][nx] == 0:
-      if cost1 + 1 < dp[ny][nx][0]:
-        dp[ny][nx][0] = cost1 + 1
-        skip = False
-      if cost2 + 1 < dp[ny][nx][1]:
-        dp[ny][nx][1] = cost2 + 1
-        skip = False
+def explore(y, x, dp):
+  q = deque([(y, x)])
+  while q:
+    y, x = q.popleft()
 
-    else:
-      if cost1 + 1 < dp[ny][nx][1]:
-        dp[ny][nx][1] = cost1 + 1
-        skip = False
+    for y_offset, x_offset in OFFSETS:
+      new_y, new_x = y + y_offset, x + x_offset
+      if not (0 <= new_y < N and 0 <= new_x < M):
+        continue
+      if dp[new_y][new_x] != -1:
+        continue
+      if grid[new_y][new_x] != 0:
+        continue
+      q.append((new_y, new_x))
+      dp[new_y][new_x] = dp[y][x] + 1
 
-    if not skip:
-      q.append((ny, nx))
 
-ans = min(dp[N - 1][M - 1])
-if ans == INF: print(-1)
-else: print(ans)
+explore(N - 1, M - 1, dp_1)
+explore(0, 0, dp_2)
+
+if N + M == 3:
+  print(2)
+  exit()
+
+if N + M == 2:
+  print(1)
+  exit()
+
+ans = -1
+for y in range(N):
+  for x in range(M):
+    for y_offset_1, x_offset_1 in OFFSETS:
+      y1, x1 = y + y_offset_1, x + x_offset_1
+      if not (0 <= y1 < N and 0 <= x1 < M):
+        continue
+        
+      for y_offset_2, x_offset_2 in OFFSETS:
+        y2, x2 = y + y_offset_2, x + x_offset_2
+        if y1 == y2 and x1 == x2:
+          continue
+        
+        if not (0 <= y2 < N and 0 <= x2 < M):
+          continue
+  
+        if dp_1[y1][x1] != -1 and dp_2[y2][x2] != -1:
+          result = dp_1[y1][x1] + dp_2[y2][x2] + 2
+          if result < ans or ans == -1:
+            ans = result
+
+print(ans)
