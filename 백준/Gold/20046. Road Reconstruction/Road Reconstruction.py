@@ -19,10 +19,6 @@ def solution():
   pq = [(grid[0][0], 0, 0)]
   while pq:
     cost, y, x = heapq.heappop(pq)
-    cost = dp[y][x]
-
-    if dp[y][x] < cost:
-      continue
 
     for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1)):
       ny, nx = y + dy, x + dx
