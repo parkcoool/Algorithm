@@ -9,20 +9,16 @@ cities = [list(map(int, input().strip().split())) for _ in range(N)]
 dp = [float("inf")] * (C + 1)
 dp[0] = 0
 
+ans = float("inf")
 for current_value in range(C + 1):
   for j in range(N):
-    multiplier = 1
-    while True:
       cost, value = cities[j]
-      cost *= multiplier
-      value *= multiplier
-
       next_value = current_value + value
       
-      if next_value >= C:
-        dp[C] = min(dp[C], dp[current_value] + cost)
-        break
-      dp[next_value] = min(dp[next_value], dp[current_value] + cost)
-      multiplier += 1
+      if next_value > C:
+        ans = min(ans, dp[current_value] + cost)
+      else:
+        dp[next_value] = min(dp[next_value], dp[current_value] + cost)
 
-print(dp[C])
+ans = min(ans, dp[C])
+print(ans)
