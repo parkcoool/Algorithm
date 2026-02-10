@@ -1,31 +1,25 @@
 import sys
-
-sys.setrecursionlimit(10**8)
+from collections import deque
 
 input = sys.stdin.readline
 
 for _ in range(int(input())):
   N = int(input())
   graph = [0] + list(map(int, input().strip().split()))
-  visited = [False] * (N + 1)
 
-  def dfs(node, path, depth=1):
-    visited[node] = True
-    path[node] = depth
-    
-    next_node = graph[node]
-    
-    if visited[next_node]:
-      if next_node in path:
-        return depth - path[next_node] + 1
-      else:
-        return 0
-    else:
-      return dfs(next_node, path, depth + 1)
+  indegrees = [0] * (N + 1)
+  for target in graph[1:]:
+    indegrees[target] += 1
 
-  ans = N
-  for i in range(1, N + 1):
-    if visited[i]: continue
-    ans -= dfs(i, {})
+  ans = 0
+  q = deque([i for i in range(1, N + 1) if indegrees[i] == 0])
+  while q:
+    current = q.popleft()
+    next_node = graph[current]
+    ans += 1
+
+    indegrees[next_node] -= 1
+    if indegrees[next_node] == 0:
+      q.append(next_node)
 
   print(ans)
