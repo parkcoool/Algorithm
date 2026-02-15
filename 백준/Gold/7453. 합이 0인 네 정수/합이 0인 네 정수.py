@@ -1,6 +1,4 @@
 import sys
-from bisect import bisect_left, bisect_right
-from collections import Counter
 
 input = sys.stdin.readline
 
@@ -14,16 +12,19 @@ for _ in range(N):
   C.append(c)
   D.append(d)
 
-AB, CD = [], []
+cd_counter = {}
 for i in range(N):
   for j in range(N):
-    AB.append(A[i] + B[j])
-    CD.append(C[i] + D[j])
-
-cd_counter = Counter(CD)
+    num = C[i] + D[j]
+    if num in cd_counter:
+      cd_counter[num] += 1
+    else:
+      cd_counter[num] = 1
 
 ans = 0
-for ab in AB:
-  ans += cd_counter[-ab]
+for i in range(N):
+  for j in range(N):
+    num = A[i] + B[j]
+    ans += cd_counter.get(-num, 0)
 
 print(ans)
