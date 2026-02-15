@@ -20,12 +20,10 @@ for y in range(N):
     if space_ids[y][x] != 0: continue
 
     last_space_id += 1
-    path = []
 
     def dfs(y, x):
       space = 1
       space_ids[y][x] = last_space_id
-      path.append((y, x))
       
       for dy, dx in ((-1, 0), (0, 1), (0, -1), (1, 0)):
         ny, nx = y + dy, x + dx
@@ -38,8 +36,6 @@ for y in range(N):
       return space
 
     spaces.append(dfs(y, x))
-    for ny, nx in path:
-      space_ids[ny][nx] = last_space_id
 
 for y in range(N):
   for x in range(M):
