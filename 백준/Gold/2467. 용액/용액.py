@@ -1,27 +1,27 @@
-import bisect
+import sys
+from bisect import bisect_left
+
+input = sys.stdin.readline
 
 N = int(input())
-nums = tuple(map(int, input().split()))
+nums = list(map(int, input().strip().split()))
 
-result = 2_000_000_000
-ans = ()
-for index in range(N):
-    num = nums[index]
+ans = [0, 0]
+min_val = float("inf")
+for a, a_val in enumerate(nums):
+  if a == N - 1: continue
+  
+  b = min(bisect_left(nums, -a_val, lo=a + 1), N - 1)
 
-    opposite_index = -1
-    opposite_indexes = [bisect.bisect_left(nums, -num, hi=index-1), bisect.bisect_left(nums, -num, lo=index+1)]
-    opposite_indexes += [opposite_indexes[0] - 1, opposite_indexes[1] - 1]
+  for b in (b - 1, b):
+    if b < 0 or a == b: continue
+      
+    b_val = nums[b]
+    val = abs(a_val + b_val)
     
-    for i in opposite_indexes:
-        if index == i or not (0 <= i < N):
-            continue
-        if opposite_index == -1 or abs(nums[i] + num) < abs(nums[opposite_index] + num):
-            opposite_index = i
-    
-    opposite = nums[opposite_index]
-    add = num + opposite
-    if abs(add) < result:
-        result = abs(add)
-        ans = (min(num, opposite), max(num, opposite))
+    if val < min_val:
+      ans = [a_val, b_val]
+      min_val = val
 
+ans.sort()
 print(*ans)
