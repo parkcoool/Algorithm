@@ -1,5 +1,4 @@
 import sys
-import heapq
 
 input = sys.stdin.readline
 
@@ -9,27 +8,23 @@ while True:
   if len(nums) == 0: break
 
   # (-높이, 시작 인덱스)
-  pq = []
+  stack = []
   ans = 0
   
   for i, num in enumerate(nums):
     current_start = i
     
-    while pq and -pq[0][0] > num:
-      height, start = heapq.heappop(pq)
-      height *= -1
-      
+    while stack and stack[-1][0] > num:
+      height, start = stack.pop()
       current_start = min(current_start, start)
       ans = max(ans, height * (i - start))
 
-    if not pq or -pq[0][0] < num:
+    if not stack or stack[-1][0] < num:
       if num == 0: continue
-      heapq.heappush(pq, (-num, current_start))
+      stack.append((num, current_start))
 
-  while pq:
-    height, start = heapq.heappop(pq)
-    height *= -1
-
+  while stack:
+    height, start = stack.pop()
     ans = max(ans, height * (N - start))
   
   print(ans)
