@@ -1,12 +1,13 @@
 import sys
 
 input = sys.stdin.readline
+INF = float("inf")
 
 *nums, _ = map(int, input().strip().split())
 N = len(nums)
 
 # dp[i][l][r]: i단계에서 왼쪽 발이 l, 오른쪽 발이 r에 있기 위한 최소 비용
-dp = [[[float("inf")] * 5 for _ in range(5)] for _ in range(N + 1)]
+dp = [[[INF] * 5 for _ in range(5)] for _ in range(N + 1)]
 dp[0][0][0] = 0
 
 for index, num in enumerate(nums):
@@ -28,17 +29,20 @@ for index, num in enumerate(nums):
       elif abs(i - num) == 2: cost = 4
       # 같은 지점
       elif i == num: cost = 1
-      
-      dp[index][num][opposite_num] = min(
-        dp[index][num][opposite_num],
-        dp[index - 1][i][opposite_num] + cost
-      )
-      dp[index][opposite_num][num] = min(
-        dp[index][opposite_num][num],
-        dp[index - 1][opposite_num][i] + cost
+
+      if dp[index - 1][i][opposite_num] != INF:
+        dp[index][num][opposite_num] = min(
+          dp[index][num][opposite_num],
+          dp[index - 1][i][opposite_num] + cost
+        )
+
+      if dp[index - 1][opposite_num][i] != INF:
+        dp[index][opposite_num][num] = min(
+          dp[index][opposite_num][num],
+          dp[index - 1][opposite_num][i] + cost
       )
 
-ans = float("inf")
+ans = INF
 for i in range(5):
   for j in range(5):
     ans = min(ans, dp[N][i][j])
