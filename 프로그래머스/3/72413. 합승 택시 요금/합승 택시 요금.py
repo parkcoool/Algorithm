@@ -3,43 +3,39 @@ import heapq
 
 INF = float("inf")
 
-def get_costs(n, graph, start):
-    costs = {node: INF for node in range(1, n + 1)}
-    costs[start] = 0
+def get_costs(graph, a):
+    costs = defaultdict(lambda: INF)
+    costs[a] = 0
     
-    q = [(0, start)]    
-    while q:
-        curr_cost, curr = heapq.heappop(q)
+    # (cost, node)
+    pq = [(0, a)]
+    while pq:
+        curr_cost, curr_node = heapq.heappop(pq)
+        if curr_cost > costs[curr_node]: continue
         
-        if costs[curr] < curr_cost:
-            continue
-            
-        for next_node, cost in graph[curr]:
-            next_cost = curr_cost + cost
-            if next_cost < costs[next_node]:
-                costs[next_node] = next_cost
-                heapq.heappush(q, (next_cost, next_node))
-                
+        for next_node, weight in graph[curr_node]:
+            next_cost = curr_cost + weight
+            if next_cost >= costs[next_node]: continue
+            heapq.heappush(pq, (next_cost, next_node))
+            costs[next_node] = next_cost
+    
     return costs
 
 def solution(n, s, a, b, fares):
+    # (node, weight)
     graph = defaultdict(list)
-    for x, y, cost in fares:
-        graph[x].append((y, cost))
-        graph[y].append((x, cost))
+    for x, y, weight in fares:
+        graph[x].append((y, weight))
+        graph[y].append((x, weight))
     
-    ans = float("inf")
-    
-    costs_s = get_costs(n, graph, s)
-    costs_a = get_costs(n, graph, a)
-    costs_b = get_costs(n, graph, b)
-    
-    cost_ab = costs_a[b]
+    ans = INF
+    costs_s = get_costs(graph, s)
+    costs_a = get_costs(graph, a)
+    costs_b = get_costs(graph, b)
     
     for i in range(1, n + 1):
-        ans = min(ans, costs_s[i] + costs_a[i] + costs_b[i])
-        ans = min(ans, costs_s[i] + costs_a[i] + cost_ab)
-        ans = min(ans, costs_s[i] + costs_b[i] + cost_ab)
-    
-    return ans
+        cost = costs_s[i] + costs_a[i] + costs_b[i]
+        ans = min(ans, cost)
+
+    return(ans)
         
