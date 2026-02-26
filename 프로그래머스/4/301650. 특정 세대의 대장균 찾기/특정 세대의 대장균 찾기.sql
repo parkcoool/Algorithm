@@ -1,17 +1,22 @@
-with recursive generation as (
+with recursive GENERATION_DATA as (
     select
-        ID,
-        1 as GENERATION
+        1 as GENERATION,
+        ID
     from ECOLI_DATA
-    where PARENT_ID is NULL
+    where PARENT_ID is null
     
     union all
     
     select
-        c.ID,
-        GENERATION + 1 as GENERATION
-    from generation p join ECOLI_DATA c on p.ID = c.PARENT_ID
-    where GENERATION < 3
+        GENERATION + 1 as GENERATION,
+        e.ID as ID
+    from GENERATION_DATA g
+    join ECOLI_DATA e
+    on g.ID = e.PARENT_ID
+    where GENERATION <= 3
 )
 
-select ID from generation where GENERATION = 3 order by ID asc;
+select ID
+from GENERATION_DATA
+where GENERATION = 3
+order by ID asc;
