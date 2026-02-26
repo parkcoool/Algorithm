@@ -1,12 +1,18 @@
-select a.ID, (
-    case
-    when PERCENT <= 0.25 then "CRITICAL"
-    when PERCENT <= 0.5 then "HIGH"
-    when PERCENT <= 0.75 then "MEDIUM"
-    else "LOW"
-    end
-) as COLONY_NAME
-from ECOLI_DATA a join (
-    select ID, percent_rank() over (order by SIZE_OF_COLONY desc) as PERCENT
+select
+    ID,
+    (
+        CASE
+        WHEN SIZE_RANK <= 0.25 THEN "CRITICAL"
+        WHEN SIZE_RANK <= 0.5 THEN "HIGH"
+        WHEN SIZE_RANK <= 0.75 THEN "MEDIUM"
+        ELSE "LOW"
+        END
+    ) as COLONY_NAME
+from ECOLI_DATA e
+join (
+    SELECT
+        ID,
+        PERCENT_RANK() over (order by SIZE_OF_COLONY desc) as SIZE_RANK
     from ECOLI_DATA
-) as b on a.ID = b.ID
+) r
+using (ID);
