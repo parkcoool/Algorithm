@@ -1,23 +1,36 @@
-with recursive tree as (
+with recursive GENERATION_DATA as (
     select
-        id,
-        1 as generation
-    from ecoli_data
-    where parent_id is null
+        1 as GENERATION,
+        ID
+    from ECOLI_DATA
+    where PARENT_ID is null
     
     union all
     
     select
-        b.id,
-        generation + 1 as generation
-    from tree a
-    join ecoli_data b on a.id = b.parent_id
+        GENERATION + 1 as GENERATION,
+        e.ID as ID
+    from GENERATION_DATA g
+    join ECOLI_DATA e
+    on e.PARENT_ID = g.ID
+),
+
+COUNT_DATA as (
+    select
+        PARENT_ID,
+        count(*) as COUNT
+    from ECOLI_DATA
+    group by PARENT_ID
 )
 
-select count(a.id) as COUNT, generation as GENERATION
-from ecoli_data a
-left join ecoli_data b on a.id = b.parent_id
-join tree on a.id = tree.id
-where b.id is null
-group by generation
-order by generation;
+select
+    COUNT(*) as COUNT,
+    GENERATION
+from ECOLI_DATA e
+join GENERATION_DATA g
+using (ID)
+left join COUNT_DATA c
+on e.ID = c.PARENT_ID
+where COUNT is null
+group by GENERATION
+order by GENERATION asc;
