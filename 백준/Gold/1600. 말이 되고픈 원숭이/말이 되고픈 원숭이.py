@@ -10,32 +10,35 @@ K = int(input())
 W, H = map(int, input().strip().split())
 grid = [list(map(int, input().strip().split())) for _ in range(H)]
 
-# dp[y][x][k]: 말의 움직임으로 k번 움직였을 때 (y, x)까지의 최소 비용
-dp = [[[float("inf")] * (K + 1) for _ in range(W)] for _ in range(H)]
-dp[0][0][0] = 0
+# visited[y][x][k]: 말의 움직임으로 k번 움직였을 때 (y, x)를 도달한 적 있는지 여부
+visited = [[[False] * (K + 1) for _ in range(W)] for _ in range(H)]
+visited[0][0][0] = True
 
 # (y, x, k, movements)
 q = deque([(0, 0, 0, 0)])
+ans = -1
 while q:
   y, x, k, movements = q.popleft()
+  
+  if y == H - 1 and x == W - 1:
+    ans = movements
+    break
 
   if k < K:
     for dy, dx in KNIGHT:
       ny, nx = y + dy, x + dx
       if not (0 <= ny < H and 0 <= nx < W): continue
-      if movements + 1 >= dp[ny][nx][k + 1]: continue
+      if visited[ny][nx][k + 1]: continue
       if grid[ny][nx] == 1: continue
-      dp[ny][nx][k + 1] = movements + 1
+      visited[ny][nx][k + 1] = True
       q.append((ny, nx, k + 1, movements + 1))
 
   for dy, dx in NORMAL:
     ny, nx = y + dy, x + dx
     if not (0 <= ny < H and 0 <= nx < W): continue
-    if movements + 1 >= dp[ny][nx][k]: continue
+    if visited[ny][nx][k]: continue
     if grid[ny][nx] == 1: continue
-    dp[ny][nx][k] = movements + 1
+    visited[ny][nx][k] = True
     q.append((ny, nx, k, movements + 1))
 
-ans = min(dp[H - 1][W - 1])
-if ans == float("inf"): print(-1)
-else: print(ans)
+print(ans)
