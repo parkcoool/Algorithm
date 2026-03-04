@@ -1,10 +1,12 @@
 def solution(triangle):
-    dp = [[triangle[0][0]]]
-    for y in range(1, len(triangle)):
-        dp.append([])
-        for x in range(y + 1):
-            result = 0
-            if x > 0: result = max(result, dp[y - 1][x - 1] + triangle[y][x])
-            if x < y: result = max(result, dp[y - 1][x] + triangle[y][x])
-            dp[-1].append(result)
+    # dp[i][j]: 꼭대기에서 (i, j)까지의 최댓값
+    dp = [[0] * (i + 1) for i in range(len(triangle))]
+    dp[0][0] = triangle[0][0]
+    
+    for i in range(1, len(triangle)):
+        for j in range(i + 1):
+            if j > 0: dp[i][j] = dp[i - 1][j - 1]
+            if j < i: dp[i][j] = max(dp[i][j], dp[i - 1][j])
+            dp[i][j] += triangle[i][j]
+    
     return max(dp[-1])
